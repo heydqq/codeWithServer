@@ -39,7 +39,7 @@ function compile(source){
           let newNode = types.assignmentExpression('+=',innerhtml,tempNode);
           for(let i = 0;i<bodyArray.length;i++) {
             if(bodyArray[i] === path.parentPath.node) {
-              bodyArray.splice(i+1,0,newNode);
+              bodyArray.splice(i,0,newNode);
               break;
             }
           }
@@ -52,6 +52,7 @@ function compile(source){
   return generator.default(astTree,{},source).code;
 }
 module.exports = function(source){
+  // console.log(source);
   let newSource = compile(source);
 
   this.callback(null,newSource);

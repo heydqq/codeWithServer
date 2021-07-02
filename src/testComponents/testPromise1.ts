@@ -1,11 +1,7 @@
-import Primise1 from '../components/promise1';
-const promise = new Primise1((resolve, reject) => {
-   resolve( 'success' )
-   reject( 'err' )
-})
+import Promise1 from '../components/promise1';
 
-promise.then(value => {
-  console.log( 'resolve' , value)
-}, reason => {
-  console.log( 'reject' , reason)
-})
+var p1 = new Promise1((resolve)=>{setTimeout(()=>{return resolve(3);},1000)});
+var p2 =Promise1.resolve(1);
+var p3 =Promise1.resolve(2);
+var p = Promise1.race([p1,p2,p3]);
+p.then(e=>{console.log(e)});

@@ -16,14 +16,14 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-env'],
-                            plugins: ['@babel/plugin-proposal-class-properties','@babel/plugin-transform-runtime']
-                        }
+                        loader: path.join(__dirname,'./loader/dqqLoader.js')
                     },
                     {
-                        loader: path.join(__dirname,'./loader/dqqLoader.js')
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env','@babel/preset-typescript'],
+                            plugins: ['@babel/plugin-proposal-class-properties','@babel/plugin-transform-runtime']
+                        }
                     },
                 ]
             },
