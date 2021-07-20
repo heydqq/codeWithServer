@@ -8,9 +8,7 @@ function createStore(reducer,preState?,enhancer?){
         return state;
     }
     const dispatch = (action) => {
-        console.log(action,state);
-        state = reducer(action,state);
-        console.log('3434334',state);
+        state = reducer(state,action);
         listeners.forEach(listener => listener());
     }
     const subscribe = (func) => {
@@ -29,12 +27,9 @@ function createStore(reducer,preState?,enhancer?){
 function combineReducers(reducers){
     return (state,action) => {
         return Object.keys(reducers).reduce((nextState,key) => {
-            console.log(nextState,key);
-            console.log(reducers);
             nextState[key] = reducers[key](state[key],action);
-            console.log(nextState);
             return nextState;
-        })
+        },{})
     }
 }
 
@@ -67,6 +62,7 @@ function applyMiddleware(...middlerwares){
             }
 
             const chain = middlerwares.map(middleware => middleware(middlewareAPI));
+            console.log('chain:',chain);
             dispatch = compose(...chain)(store.dispatch);
             return {
                 ...store,
@@ -85,11 +81,13 @@ function compose(...funcs){
     if(len === 1){
         return func[0];
     }
-    return func.reduce((a,b)=>{
+    let resu = func.reduce((a,b)=>{
         return function(){
             return a(b(...arguments));
         }
     })
+    console.log('compose result:',resu);
+    return resu;
 }
 
 export {
