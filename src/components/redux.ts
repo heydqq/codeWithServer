@@ -1,26 +1,44 @@
-function createStore(reducer,preState?,enhancer?){
-    if(enhancer){
-        return enhancer(createStore)(reducer,preState);
+function createStore(reducers,prevState?,enhancer?){
+    if(
+        (typeof prevState === 'function' && typeof enhancer === 'undefined') ||
+        typeof enhancer === 'function'
+    ) {
+        return enhancer(createStore)(reducers,prevState);
     }
     let state = {};
     let listeners = [];
+    let currentReducers = reducers;
     const getState = () => {
         return state;
     }
-    const dispatch = (action) => {
-        state = reducer(state,action);
-        listeners.forEach(listener => listener());
+
+    const dispatch = (action) =>{
+        state = currentReducers(state,action);
+        listeners.forEach(listener => {
+            listener()
+        })
     }
+
     const subscribe = (func) => {
         listeners.push(func);
         return () => {
-            listeners = listeners.filter(listener => listener !== func);
+            listeners = listeners.map(listener => listener !== func);
         }
     }
+
+    dispatch({
+        type:'@@redux/INIT'
+    })
+
+    const replaceReducer = (newReducer) => {
+        currentReducers = newReducer;
+    }
+
     return {
-        getState,
         dispatch,
-        subscribe
+        subscribe,
+        getState,
+        replaceReducer,
     }
 }
 
@@ -42,7 +60,7 @@ function thunkMiddleWare(extraArgument?){
         }
     }
 }
-const thunk = thunkMiddleWare();
+const middlerware_thunk = thunkMiddleWare();
 
 function applyMiddleware(...middlerwares){
     return createStore => {
@@ -58,11 +76,11 @@ function applyMiddleware(...middlerwares){
 
             const middlewareAPI = {
                 getState:store.getState,
-                dispatch:(action,...args) => dispatch(action,...args)
+                dispatch:(action,...args) => dispatch(action,...args), //指向了dispath这个变量所指向的地址
+                // dispatch1:dispatch  //不行，这样是指向了初始化的dispatch方法所在地址
             }
 
             const chain = middlerwares.map(middleware => middleware(middlewareAPI));
-            console.log('chain:',chain);
             dispatch = compose(...chain)(store.dispatch);
             return {
                 ...store,
@@ -86,12 +104,12 @@ function compose(...funcs){
             return a(b(...arguments));
         }
     })
-    console.log('compose result:',resu);
     return resu;
 }
 
 export {
     createStore,
     applyMiddleware,
-    combineReducers
+    combineReducers,
+    middlerware_thunk
 }
