@@ -145,11 +145,7 @@ class Promise1 {
   static race(promises) { 
     return new Promise1((resolve,reject) => {
       for(let i = 0;i<promises.length;i++) {
-        Promise1.resolve(promises[i]).then(res=>{
-          return resolve(res);
-        },rea => {
-          return reject(rea);
-        })
+        Promise1.resolve(promises[i]).then(resolve,reject)
       }
     })
   }
