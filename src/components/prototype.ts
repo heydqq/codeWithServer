@@ -38,12 +38,29 @@ var s3 = new CreateTreatSoldier('dqq');
 s3.shot();
 console.log(s3);
 
+// let objCreate = function (obj,params) {
+//     function F (){}
+//     F.prototype = obj;
+//     let o = new F();
+//     Object.defineProperties(o,params);
+//     return o;
+// }
 
-
-let objCreate = function (obj,params) {
-    function F (){}
-    F.prototype = obj;
-    let o = new F();
-    Object.defineProperties(o,params);
-    return o;
+let _instanceOf  = function(a,b){
+    let left = b.prototype;
+    let right = a.__proto__;
+    while(true){
+        if(right === left){
+            return true;
+        }
+        else if (right === null){
+            return false;
+        }
+        right = right.__proto__;
+    }
 }
+
+console.log(_instanceOf(s3,CreateSoldier),
+_instanceOf(s3,Object),
+_instanceOf(s3,Array)
+)
