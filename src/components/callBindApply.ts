@@ -20,13 +20,26 @@ Function.prototype.myApply = function(context){
     delete context[fn];
 }
 
-Function.prototype.myBind = function(context) {
-    let self = this;
-    let arg = [...arguments].slice(1);
-    return function() {
-        let args = [...arguments].concat(arg);
-        return self.myApply(context,args);
-    };
+Function.prototype.myBind = function (context,...outerArgs) {
+    let fn = Symbol();
+    context[fn] = this;
+    let _this = this;
+
+    let result = function(...innerArgs){
+        let args = [...outerArgs,...innerArgs];
+        if(this instanceof _this) { //构造函数的情况
+            this[fn] = _this;
+            this[fn](...args);
+            delete this[fn];
+        } else {
+            context[fn](...args);
+            delete context[fn];
+        }
+    }
+    // 如果绑定的是构造函数 那么需要继承构造函数原型属性和方法
+    // 实现继承的方式: 使用Object.create
+    result.prototype = Object.create(_this.prototype)
+    return result
 }
 
 let Person = {
