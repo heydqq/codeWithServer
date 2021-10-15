@@ -5,8 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= htmlWebpackPlugin.options.config.title %></title>
     <style>
+      .box{
+        display: flex;
+        width: 300px;
+        border: 1px solid red;
+      }
+      .box div{
+        flex-grow: 0 1 auto;
+        width: 25%;
+        border: 1px solid blue;
+      }
     </style>
 </head>
 <body>
+  <div class="box">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <!-- <div>4</div>
+     -->
+  </div>
+  <script>
+    console.log(window.parent === window.self)
+    window.addEventListener('message',function(e){
+      console.log('...........',e.data);
+      if(window.parent !== window.self){
+        window.parent.postMessage({ok:'slef'},'*')
+      }
+    })
+  </script>
 </body>
 </html>

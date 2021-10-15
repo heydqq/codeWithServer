@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= htmlWebpackPlugin.options.config.title %></title>
+    <style>
+    </style>
+</head>
+<body>
+    <input id="input" />
+    <button  onclick="clic()">click</button>
+    <script>
+        const bc = new BroadcastChannel('dqqtest');
+        bc.onmessage = function(e){
+            const {
+                data
+            } = e;
+            console.log('receive message:',data)
+        }
+        function clic(){
+            let input = document.getElementById('input');
+            bc.postMessage(input.value)
+        }
+    </script>
+     <script>
+        navigator.serviceWorker.register('./sw.js').then(() => {
+            console.log('注册成功');
+        })
+        navigator.serviceWorker.addEventListener('message',(e) => {
+            console.log('receive message:',e.data);
+        })
+        function clic(){
+            let input = document.getElementById('input');
+            navigator.serviceWorker.controller.postMessage(input.value)
+        }
+    </script>
+</body>
+</html>

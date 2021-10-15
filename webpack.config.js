@@ -3,12 +3,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const isDev = process.env.NODE_ENV === 'development';
 const config = require('./public/config')[isDev ? 'dev' : 'build']
-module.exports = {
+const SpeedMesurePlugin = require('speed-measure-webpack-plugin');
+const smp = new SpeedMesurePlugin();
+const webpackConfig = {
     mode: isDev ?  "development" : 'production',
     entry:['./src/index.ts','./src/moreEntry.ts'],
     devtool: 'inline-source-map',
     devServer: {
-        // contentBase: path.join(__dirname, 'public'),
+        contentBase: path.join(__dirname, 'public'),
         port: 9009,
     },
     module: {
@@ -41,6 +43,22 @@ module.exports = {
             }
         ]
     },
+    optimization:{
+        splitChunks:{
+            cacheGroups:{
+                common: {
+                    //公共模块
+                    chunks: 'initial',
+                    name: 'common',
+                    minSize: 100, //大小超过100个字节
+                    minChunks: 1 //最少引入了3次
+                },
+                runtimeChunk: {
+                    name: 'manifest'
+                }
+            }
+        }
+    },
     plugins: [
         new HtmlWebpackPlugin ({
             config:config.template,
@@ -60,3 +78,5 @@ module.exports = {
         clean:true,
     },
 }
+
+module.exports = smp.wrap(webpackConfig)
