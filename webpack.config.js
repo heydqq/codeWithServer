@@ -7,7 +7,8 @@ const SpeedMesurePlugin = require('speed-measure-webpack-plugin');
 const smp = new SpeedMesurePlugin();
 const webpackConfig = {
     mode: isDev ?  "development" : 'production',
-    entry:['./src/index.ts','./src/moreEntry.ts'],
+    // entry:['./src/index.ts','./src/moreEntry.ts'],
+    entry:['./src/index.ts'],
     devtool: 'inline-source-map',
     devServer: {
         contentBase: path.join(__dirname, 'public'),
